@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import "@/env.mjs";
 
 export default auth((request) => {
   if (!request.auth) {

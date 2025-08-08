@@ -4,37 +4,24 @@ import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
 import { env } from "./env.mjs";
 
-
 if (env.CONVEX_AUTH_PRIVATE_KEY === undefined) {
-  throw new Error(
-    "Missing CONVEX_AUTH_PRIVATE_KEY Next.js environment variable",
-  );
+  throw new Error("Missing CONVEX_AUTH_PRIVATE_KEY Next.js environment variable");
 }
 
 if (env.NEXT_PUBLIC_CONVEX_URL === undefined) {
-  throw new Error(
-    "Missing NEXT_PUBLIC_CONVEX_URL Next.js environment variable",
-  );
+  throw new Error("Missing NEXT_PUBLIC_CONVEX_URL Next.js environment variable");
 }
 
-const CONVEX_SITE_URL = env.NEXT_PUBLIC_CONVEX_URL.replace(
-  /.cloud$/,
-  ".site",
-);
+const CONVEX_SITE_URL = env.NEXT_PUBLIC_CONVEX_URL.replace(/.cloud$/, ".site");
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   session: { strategy: "jwt" },
-  providers: [
-    GitHub
-  ],
+  providers: [GitHub],
   adapter: ConvexAdapter,
   callbacks: {
     // Attach a JWT for authenticating with Convex
     async session({ session }) {
-      const privateKey = await importPKCS8(
-        env.CONVEX_AUTH_PRIVATE_KEY,
-        "RS256",
-      );
+      const privateKey = await importPKCS8(env.CONVEX_AUTH_PRIVATE_KEY, "RS256");
       const convexToken = await new SignJWT({
         // These fields will be available on `ctx.auth.getUserIdentity()`
         // in Convex functions:

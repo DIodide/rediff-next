@@ -32,11 +32,7 @@ function useAuth() {
     () => ({
       isLoading: false,
       isAuthenticated: session !== null,
-      fetchAccessToken: async ({
-        forceRefreshToken,
-      }: {
-        forceRefreshToken: boolean;
-      }) => {
+      fetchAccessToken: async ({ forceRefreshToken }: { forceRefreshToken: boolean }) => {
         if (forceRefreshToken) {
           const session = await update();
 

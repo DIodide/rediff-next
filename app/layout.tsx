@@ -9,11 +9,7 @@ export const metadata: Metadata = {
   description: "My app description",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className={`${inter.className} min-h-screen bg-background text-foreground`}>

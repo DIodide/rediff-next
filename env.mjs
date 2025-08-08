@@ -11,9 +11,12 @@ export const env = createEnv({
     AUTH_GITHUB_SECRET: z.string().min(1),
     // Optional: Convex adapter secret and site URL
     CONVEX_AUTH_ADAPTER_SECRET: z.string().min(1).optional(),
+    // Clerk + Convex (issuer URL for Convex auth.config)
+    CLERK_FRONTEND_API_URL: z.string().url(),
   },
   client: {
     NEXT_PUBLIC_CONVEX_URL: z.string().url(),
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1),
   },
   runtimeEnv: {
     CONVEX_AUTH_PRIVATE_KEY: process.env.CONVEX_AUTH_PRIVATE_KEY,
@@ -22,6 +25,9 @@ export const env = createEnv({
     AUTH_GITHUB_SECRET: process.env.AUTH_GITHUB_SECRET,
     CONVEX_AUTH_ADAPTER_SECRET: process.env.CONVEX_AUTH_ADAPTER_SECRET,
     NEXT_PUBLIC_CONVEX_URL: process.env.NEXT_PUBLIC_CONVEX_URL,
+    CLERK_FRONTEND_API_URL: process.env.CLERK_FRONTEND_API_URL,
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
+      process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
   },
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
   emptyStringAsUndefined: true,

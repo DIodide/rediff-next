@@ -1,12 +1,7 @@
-import { auth } from "@/auth";
-import "@/env.mjs";
+import { clerkMiddleware } from "@clerk/nextjs/server";
 
-export default auth((request) => {
-  if (!request.auth) {
-    return Response.redirect(new URL("/", request.url));
-  }
-});
+export default clerkMiddleware();
 
 export const config = {
-  matcher: ["/(loggedin.*)"],
+  matcher: ["/((?!_next|.*\..*|api).*)"],
 };

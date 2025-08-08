@@ -2,7 +2,7 @@ import { ConvexAdapter } from "@/app/ConvexAdapter";
 import { SignJWT, importPKCS8 } from "jose";
 import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
-import Resend from "next-auth/providers/resend";
+
 
 if (process.env.CONVEX_AUTH_PRIVATE_KEY === undefined) {
   throw new Error(
@@ -22,6 +22,7 @@ const CONVEX_SITE_URL = process.env.NEXT_PUBLIC_CONVEX_URL!.replace(
 );
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  session: { strategy: "jwt" },
   providers: [
     GitHub,
     Resend({

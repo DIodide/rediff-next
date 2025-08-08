@@ -24,11 +24,7 @@ const CONVEX_SITE_URL = process.env.NEXT_PUBLIC_CONVEX_URL!.replace(
 export const { handlers, signIn, signOut, auth } = NextAuth({
   session: { strategy: "jwt" },
   providers: [
-    GitHub,
-    Resend({
-      name: "email",
-      from: "My App <onboarding@resend.dev>",
-    }),
+    GitHub
   ],
   adapter: ConvexAdapter,
   callbacks: {

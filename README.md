@@ -31,9 +31,7 @@ Then:
    [this guide](https://authjs.dev/guides/configuring-github#registering-your-app)
    to create a GitHub OAuth app and then add `AUTH_GITHUB_ID` and
    `AUTH_GITHUB_SECRET` to `.env.local`
-6. Follow
-   [this guide](https://authjs.dev/guides/configuring-resend#registering-your-app)
-   to sign up for Resend and then add `AUTH_RESEND_KEY` to `.env.local`
+6. (Optional) Email providers can be added later.
 
 Now your `.env.local` should match `.env.example` and there should be `JWKS` and
 `CONVEX_AUTH_ADAPTER_SECRET` variables on your Convex dashboard.
@@ -47,3 +45,18 @@ npm run dev
 and open your app at http://localhost:3000
 
 See Convex docs at https://docs.convex.dev/home
+
+## Environment Variables (t3-oss)
+
+This project uses `@t3-oss/env-nextjs` for type-safe envs. Define variables in `env.mjs` and create `.env.local` with:
+
+```
+CONVEX_AUTH_PRIVATE_KEY=
+NEXTAUTH_SECRET=
+AUTH_GITHUB_ID=
+AUTH_GITHUB_SECRET=
+CONVEX_AUTH_ADAPTER_SECRET=
+NEXT_PUBLIC_CONVEX_URL=
+```
+
+You can skip validation with `SKIP_ENV_VALIDATION=1`.

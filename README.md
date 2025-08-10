@@ -1,62 +1,51 @@
-# Convex + Next.js + Auth.js + Tailwind + shadcn/ui
+# Welcome to your Convex + Next.js + Clerk app
 
-This template provides a minimal setup to get Convex working with
-[Next.js](https://nextjs.org/). It uses [Auth.js](https://authjs.dev) for user
-authentication.
+This is a [Convex](https://convex.dev/) project created with [`npm create convex`](https://www.npmjs.com/package/create-convex).
 
-## Setting up
+After the initial setup (<2 minutes) you'll have a working full-stack app using:
 
-Clone the template and install dependencies:
+- Convex as your backend (database, server logic)
+- [React](https://react.dev/) as your frontend (web page interactivity)
+- [Next.js](https://nextjs.org/) for optimized web hosting and page routing
+- [Tailwind](https://tailwindcss.com/) for building great looking accessible UI
+- [Clerk](https://clerk.com/) for authentication
+
+## Get started
+
+If you just cloned this codebase and didn't use `npm create convex`, run:
 
 ```
-npm create convex@latest -- -t get-convex/convex-nextauth-template
+npm install
+npm run dev
+```
+
+If you're reading this README on GitHub and want to use this template, run:
+
+```
+npm create convex@latest -- -t nextjs-clerk
 ```
 
 Then:
 
-1. Run `npx convex dev --once`, and follow the steps to provision a Convex
-   backend
-2. Generate private and public key by running `node generateKeys.mjs`
-   - Paste the private key `CONVEX_AUTH_PRIVATE_KEY=...` to the `.env.local`
-     file
-   - Paste the public key `JWKS=...` to your
-     [Convex dashboard](https://dashboard.convex.dev/deployment/settings/environment-variables)
-3. Generate a random secret (via `openssl rand -base64 33` or `npx auth secret`)
-   and save it as `AUTH_SECRET` to the `.env.local` file
-4. Generate another random secret and save it as `CONVEX_AUTH_ADAPTER_SECRET` to
-   - the `.env.local` file
-   - to your
-     [Convex dashboard](https://dashboard.convex.dev/deployment/settings/environment-variables)
-5. Follow
-   [this guide](https://authjs.dev/guides/configuring-github#registering-your-app)
-   to create a GitHub OAuth app and then add `AUTH_GITHUB_ID` and
-   `AUTH_GITHUB_SECRET` to `.env.local`
-6. (Optional) Email providers can be added later.
+1. Open your app. There should be a "Claim your application" button from Clerk in the bottom right of your app.
+2. Follow the steps to claim your application and link it to this app.
+3. Follow step 3 in the [Convex Clerk onboarding guide](https://docs.convex.dev/auth/clerk#get-started) to create a Convex JWT template.
+4. Uncomment the Clerk provider in `convex/auth.config.ts`
+5. Paste the Issuer URL as `CLERK_JWT_ISSUER_DOMAIN` to your dev deployment environment variable settings on the Convex dashboard (see [docs](https://docs.convex.dev/auth/clerk#configuring-dev-and-prod-instances))
 
-Now your `.env.local` should match `.env.example` and there should be `JWKS` and
-`CONVEX_AUTH_ADAPTER_SECRET` variables on your Convex dashboard.
+If you want to sync Clerk user data via webhooks, check out this [example repo](https://github.com/thomasballinger/convex-clerk-users-table/).
 
-You can now run:
+## Learn more
 
-```sh
-npm run dev
-```
+To learn more about developing your project with Convex, check out:
 
-and open your app at http://localhost:3000
+- The [Tour of Convex](https://docs.convex.dev/get-started) for a thorough introduction to Convex principles.
+- The rest of [Convex docs](https://docs.convex.dev/) to learn about all Convex features.
+- [Stack](https://stack.convex.dev/) for in-depth articles on advanced topics.
 
-See Convex docs at https://docs.convex.dev/home
+## Join the community
 
-## Environment Variables (t3-oss)
+Join thousands of developers building full-stack apps with Convex:
 
-This project uses `@t3-oss/env-nextjs` for type-safe envs. Define variables in `env.mjs` and create `.env.local` with:
-
-```
-CONVEX_AUTH_PRIVATE_KEY=
-NEXTAUTH_SECRET=
-AUTH_GITHUB_ID=
-AUTH_GITHUB_SECRET=
-CONVEX_AUTH_ADAPTER_SECRET=
-NEXT_PUBLIC_CONVEX_URL=
-```
-
-You can skip validation with `SKIP_ENV_VALIDATION=1`.
+- Join the [Convex Discord community](https://convex.dev/community) to get help in real-time.
+- Follow [Convex on GitHub](https://github.com/get-convex/), star and contribute to the open-source implementation of Convex.

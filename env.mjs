@@ -9,6 +9,8 @@ export const env = createEnv({
     CLERK_FRONTEND_API_URL: z.string().url(),
     // Clerk webhook signing secret for Convex HTTP endpoint verification
     CLERK_WEBHOOK_SECRET: z.string().min(1),
+    // GitHub webhook secret used to validate deliveries
+    GITHUB_WEBHOOK_SECRET: z.string().min(1),
   },
   client: {
     // Convex deployment URL for browser client
@@ -20,6 +22,7 @@ export const env = createEnv({
     CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
     CLERK_FRONTEND_API_URL: process.env.CLERK_FRONTEND_API_URL,
     CLERK_WEBHOOK_SECRET: process.env.CLERK_WEBHOOK_SECRET,
+    GITHUB_WEBHOOK_SECRET: process.env.GITHUB_WEBHOOK_SECRET,
     NEXT_PUBLIC_CONVEX_URL: process.env.NEXT_PUBLIC_CONVEX_URL,
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
       process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,

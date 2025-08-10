@@ -12,10 +12,27 @@ export const current = query({
 export const upsertFromClerk = internalMutation({
   args: { data: v.any() as Validator<UserJSON> }, // no runtime validation, trust Clerk
   async handler(ctx, { data }) {
+    const primaryEmail =
+      data.email_addresses?.find((e) => e.id === data.primary_email_address_id)
+        ?.email_address || data.email_addresses?.[0]?.email_address;
+
+    // Clerk external accounts include GitHub when user signs in via GitHub provider
+    const github = (data.external_accounts || []).find(
+      (a) => a.provider === "github",
+    );
+    const githubId = github ? String(github.provider_user_id) : undefined;
+    const githubUsername = github?.username as string | undefined;
+    const githubAvatarUrl =
+      (github?.image_url as string | undefined) ?? undefined;
+
     const userAttributes = {
-      name: `${data.first_name} ${data.last_name}`,
+      name: `${data.first_name ?? ""} ${data.last_name ?? ""}`.trim(),
       externalId: data.id,
-    };
+      email: primaryEmail,
+      githubId,
+      githubUsername,
+      githubAvatarUrl,
+    } as const;
 
     const user = await userByExternalId(ctx, data.id);
     if (user === null) {

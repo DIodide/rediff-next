@@ -1,6 +1,7 @@
 import { httpRouter } from "convex/server";
 import { httpAction } from "./_generated/server";
-import { internal } from "./_generated/api";
+import { internal, api } from "./_generated/api";
+import crypto from "node:crypto";
 import type { WebhookEvent } from "@clerk/backend";
 import { Webhook } from "svix";
 
@@ -49,14 +50,31 @@ http.route({
     if (!valid) return new Response("invalid signature", { status: 401 });
 
     // record event for idempotency/audit
-    await ctx.runMutation(internal.github.recordEvent, {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await ctx.runMutation((internal as any).github.recordEvent, {
       idempotencyKey: deliveryId,
       event,
       payload: JSON.parse(rawBody || "{}"),
     });
 
-    // TODO: handle events: push, pull_request, check_suite, installation_repositories
-    // This will be expanded in milestone 3/4
+    // Minimal handling: when repos change, re-sync
+    if (event === "installation_repositories") {
+      const body = JSON.parse(rawBody || "{}");
+      const installationId = body.installation?.id;
+      if (typeof installationId === "number") {
+        try {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          await ctx.runAction(
+            (api as any).github_sync.syncReposForInstallation,
+            {
+              installationId,
+            },
+          );
+        } catch (e) {
+          console.error("install repos sync failed", e);
+        }
+      }
+    }
 
     return new Response(null, { status: 202 });
   }),
@@ -68,28 +86,12 @@ function verifyGithubSignature(
   signatureHeader: string | null,
 ): boolean {
   if (!signatureHeader) return false;
-  try {
-    const encoder = new TextEncoder();
-    const key = crypto.subtle.importKey(
-      "raw",
-      encoder.encode(secret),
-      { name: "HMAC", hash: "SHA-256" },
-      false,
-      ["sign"],
-    );
-    // crypto.subtle is async; wrap in sync-like helper
-    // but Convex actions are async so we can block here via Atomics? Simpler: fallback to Node crypto
-  } catch {}
-  // Fallback to Node's crypto (Convex runtime supports Node APIs in httpAction)
-  const nodeCrypto = require("crypto");
   const expected =
-    "sha256=" +
-    nodeCrypto.createHmac("sha256", secret).update(body).digest("hex");
-  // constant-time compare
+    "sha256=" + crypto.createHmac("sha256", secret).update(body).digest("hex");
   const a = Buffer.from(expected);
   const b = Buffer.from(signatureHeader);
   if (a.length !== b.length) return false;
-  return nodeCrypto.timingSafeEqual(a, b);
+  return crypto.timingSafeEqual(a, b);
 }
 
 async function validateRequest(req: Request): Promise<WebhookEvent | null> {

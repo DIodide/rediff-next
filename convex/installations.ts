@@ -1,4 +1,9 @@
-import { internalMutation, internalQuery, mutation } from "./_generated/server";
+import {
+  internalMutation,
+  internalQuery,
+  mutation,
+  query,
+} from "./_generated/server";
 import { v } from "convex/values";
 import { getCurrentUserOrThrow } from "./users";
 
@@ -114,5 +119,42 @@ export const recordFromGithub = mutation({
     }
 
     return null;
+  },
+});
+
+export const listMyInstallations = query({
+  args: {},
+  returns: v.any(),
+  async handler(ctx) {
+    const user = await getCurrentUserOrThrow(ctx);
+    const installs = await ctx.db
+      .query("installations")
+      .withIndex("byConnectedBy", (q) => q.eq("connectedByUserId", user._id))
+      .collect();
+    return installs;
+  },
+});
+
+export const listReposForInstallation = query({
+  args: { installationId: v.number() },
+  returns: v.any(),
+  async handler(ctx, { installationId }) {
+    const user = await getCurrentUserOrThrow(ctx);
+    const install = await ctx.db
+      .query("installations")
+      .withIndex("byInstallationId", (q) =>
+        q.eq("installationId", installationId),
+      )
+      .unique();
+    if (!install || install.connectedByUserId !== user._id) {
+      throw new Error("Not authorized to view this installation");
+    }
+    const repos = await ctx.db
+      .query("repos")
+      .withIndex("byInstallationId", (q) =>
+        q.eq("installationId", installationId),
+      )
+      .collect();
+    return repos;
   },
 });

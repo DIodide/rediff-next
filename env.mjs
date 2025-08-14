@@ -11,6 +11,9 @@ export const env = createEnv({
     CLERK_WEBHOOK_SECRET: z.string().min(1),
     // GitHub webhook secret used to validate deliveries
     GITHUB_WEBHOOK_SECRET: z.string().min(1),
+    // GitHub App credentials (for repo sync)
+    GITHUB_APP_ID: z.string().min(1),
+    GITHUB_PRIVATE_KEY: z.string().min(1),
   },
   client: {
     // Convex deployment URL for browser client
@@ -23,6 +26,8 @@ export const env = createEnv({
     CLERK_FRONTEND_API_URL: process.env.CLERK_FRONTEND_API_URL,
     CLERK_WEBHOOK_SECRET: process.env.CLERK_WEBHOOK_SECRET,
     GITHUB_WEBHOOK_SECRET: process.env.GITHUB_WEBHOOK_SECRET,
+    GITHUB_APP_ID: process.env.GITHUB_APP_ID,
+    GITHUB_PRIVATE_KEY: process.env.GITHUB_PRIVATE_KEY,
     NEXT_PUBLIC_CONVEX_URL: process.env.NEXT_PUBLIC_CONVEX_URL,
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
       process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,

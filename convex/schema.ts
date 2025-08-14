@@ -30,7 +30,8 @@ export default defineSchema({
     connectedByUserId: v.optional(v.id("users")),
   })
     .index("byInstallationId", ["installationId"]) // unique per provider
-    .index("byAccountLogin", ["accountLogin"]),
+    .index("byAccountLogin", ["accountLogin"]) // list by account login
+    .index("byConnectedBy", ["connectedByUserId"]),
 
   // Repositories accessible via an installation
   repos: defineTable({
@@ -42,7 +43,8 @@ export default defineSchema({
     connectedByUserId: v.optional(v.id("users")),
   })
     .index("byOwnerAndName", ["owner", "name"]) // to find repos quickly
-    .index("byInstallationId", ["installationId"]),
+    .index("byInstallationId", ["installationId"]) // list by installation
+    .index("byConnectedBy", ["connectedByUserId"]),
 
   // Raw webhook events for audit/debugging and reprocessing
   github_events: defineTable({

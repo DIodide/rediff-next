@@ -42,6 +42,15 @@ export async function GET(request: NextRequest) {
     repos,
   });
 
+  // Auto-sync repositories for the installation
+  try {
+    await convex.action((api as any).github_sync.syncReposForInstallation, {
+      installationId,
+    });
+  } catch (e) {
+    console.error("Repo sync failed", e);
+  }
+
   // Redirect back to dashboard (or a success page)
   return NextResponse.redirect(new URL("/dashboard", request.url));
 }

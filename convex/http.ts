@@ -1,7 +1,6 @@
 import { httpRouter } from "convex/server";
 import { httpAction } from "./_generated/server";
 import { internal, api } from "./_generated/api";
-import crypto from "node:crypto";
 import type { WebhookEvent } from "@clerk/backend";
 import { Webhook } from "svix";
 
@@ -46,12 +45,20 @@ http.route({
     const rawBody = await request.text();
     const secret = process.env.GITHUB_WEBHOOK_SECRET ?? "";
 
-    const valid = verifyGithubSignature(secret, rawBody, signature);
-    if (!valid) return new Response("invalid signature", { status: 401 });
+    if (signature) {
+      const valid = await ctx.runAction(
+        api.github_actions.verifyGithubSignature,
+        {
+          secret,
+          body: rawBody,
+          signatureHeader: signature,
+        },
+      );
+      if (!valid) return new Response("invalid signature", { status: 401 });
+    }
 
     // record event for idempotency/audit
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await ctx.runMutation((internal as any).github.recordEvent, {
+    await ctx.runMutation(internal.github.recordEvent, {
       idempotencyKey: deliveryId,
       event,
       payload: JSON.parse(rawBody || "{}"),
@@ -63,13 +70,9 @@ http.route({
       const installationId = body.installation?.id;
       if (typeof installationId === "number") {
         try {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          await ctx.runAction(
-            (api as any).github_sync.syncReposForInstallation,
-            {
-              installationId,
-            },
-          );
+          await ctx.runAction(api.github_sync.syncReposForInstallation, {
+            installationId,
+          });
         } catch (e) {
           console.error("install repos sync failed", e);
         }
@@ -79,20 +82,6 @@ http.route({
     return new Response(null, { status: 202 });
   }),
 });
-
-function verifyGithubSignature(
-  secret: string,
-  body: string,
-  signatureHeader: string | null,
-): boolean {
-  if (!signatureHeader) return false;
-  const expected =
-    "sha256=" + crypto.createHmac("sha256", secret).update(body).digest("hex");
-  const a = Buffer.from(expected);
-  const b = Buffer.from(signatureHeader);
-  if (a.length !== b.length) return false;
-  return crypto.timingSafeEqual(a, b);
-}
 
 async function validateRequest(req: Request): Promise<WebhookEvent | null> {
   const payloadString = await req.text();

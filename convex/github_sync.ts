@@ -44,7 +44,7 @@ export const syncReposForInstallation = action({
     const appJwt = signJwtRS256(appId, privateKey);
 
     // Exchange for installation token
-    const tokenRes = await ctx.fetch(
+    const tokenRes = await fetch(
       `https://api.github.com/app/installations/${installationId}/access_tokens`,
       {
         method: "POST",
@@ -65,7 +65,7 @@ export const syncReposForInstallation = action({
     const installationToken = tokenJson.token;
 
     // List repositories for installation
-    const reposRes = await ctx.fetch(
+    const reposRes = await fetch(
       `https://api.github.com/installation/repositories`,
       {
         headers: {

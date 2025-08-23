@@ -11,7 +11,7 @@ import { env } from "@/env.mjs";
 // Optional: we can fetch repo list here via GitHub API using the app token, but for MVP we accept repos via client call.
 
 export async function GET(request: NextRequest) {
-  const { userId } = auth();
+  const { userId } = await auth();
   if (!userId) {
     return NextResponse.redirect(new URL("/", request.url));
   }
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
 
   // Auto-sync repositories for the installation
   try {
-    await convex.action((api as any).github_sync.syncReposForInstallation, {
+    await convex.action(api.github_sync.syncReposForInstallation, {
       installationId,
     });
   } catch (e) {

@@ -6,6 +6,7 @@ import { Webhook } from "svix";
 
 const http = httpRouter();
 
+// Clerk webhook route (for sync)
 http.route({
   path: "/clerk-users-webhook",
   method: "POST",
@@ -35,6 +36,7 @@ http.route({
   }),
 });
 
+// Github webhook route
 http.route({
   path: "/github/webhook",
   method: "POST",
@@ -83,6 +85,7 @@ http.route({
   }),
 });
 
+// Clerk webhook validation
 async function validateRequest(req: Request): Promise<WebhookEvent | null> {
   const payloadString = await req.text();
   const svixHeaders = {

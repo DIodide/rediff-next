@@ -7,6 +7,14 @@ import {
 import { v } from "convex/values";
 import { getCurrentUserOrThrow } from "./users";
 
+/**
+ * Upserts an installation in the database.
+ * @param {string} installationId - The installation ID from Github
+ * @param {string} accountLogin - The login of the account that owns the installation
+ * @param {string} accountType - The type of account (User or Organization)
+ * @param {string} connectedByUserId - The user ID of the user that connected the installation
+ * @returns {Promise<null>} - Returns null
+ */
 export const upsert = internalMutation({
   args: {
     installationId: v.number(),
@@ -40,6 +48,11 @@ export const upsert = internalMutation({
   },
 });
 
+/**
+ * Gets an installation by its installation ID.
+ * @param {string} installationId - The installation ID from Github
+ * @returns {Promise<Document<"installations"> | null>} The installation or null if it doesn't exist
+ */
 export const getByInstallationId = internalQuery({
   args: { installationId: v.number() },
   returns: v.any(),
@@ -53,6 +66,13 @@ export const getByInstallationId = internalQuery({
   },
 });
 
+/**
+ * Records an installation from Github.
+ * @param {string} installationId - The installation ID from Github
+ * @param {string} accountLogin - The login of the account that owns the installation
+ * @param {string} accountType - The type of account (User or Organization)
+ * @param {string} repos - The repos to record
+ */
 export const recordFromGithub = mutation({
   args: {
     installationId: v.number(),
@@ -122,6 +142,10 @@ export const recordFromGithub = mutation({
   },
 });
 
+/**
+ * Lists all installations for the current user.
+ * @returns {Promise<Document<"installations">[]>} The installations
+ */
 export const listMyInstallations = query({
   args: {},
   returns: v.any(),
@@ -135,6 +159,11 @@ export const listMyInstallations = query({
   },
 });
 
+/**
+ * Lists all repos for an installation.
+ * @param {string} installationId - The installation ID from Github
+ * @returns {Promise<Document<"repos">[]>} The repos
+ */
 export const listReposForInstallation = query({
   args: { installationId: v.number() },
   returns: v.any(),

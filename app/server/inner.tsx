@@ -8,8 +8,9 @@ export default function Home({
 }: {
   preloaded: Preloaded<typeof api.myFunctions.listNumbers>;
 }) {
-  const data = usePreloadedQuery(preloaded);
-  const addNumber = useMutation(api.myFunctions.addNumber);
+  const data = usePreloadedQuery(preloaded); // Reactive query
+  const addNumber = useMutation(api.myFunctions.addNumber); // Reactive mutation
+
   return (
     <>
       <div className="flex flex-col gap-4 bg-slate-200 dark:bg-slate-800 p-4 rounded-md">

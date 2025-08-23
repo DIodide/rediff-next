@@ -1,6 +1,12 @@
 import { internalMutation, internalQuery } from "./_generated/server";
 import { v } from "convex/values";
 
+/**
+ * INTERNAL: Upserts many repos for an installation.
+ * @param {string} installationId - The installation ID from Github
+ * @param {string} repos - The repos to upsert
+ * @param {string} connectedByUserId - The user ID of the user that connected the installation
+ */
 export const upsertManyForInstallation = internalMutation({
   args: {
     installationId: v.number(),
@@ -41,6 +47,11 @@ export const upsertManyForInstallation = internalMutation({
   },
 });
 
+/**
+ * INTERNAL: Lists all repos for an installation.
+ * @param {string} installationId - The installation ID from Github
+ * @returns {Promise<Document<"repos">[]>} The repos
+ */
 export const listByInstallation = internalQuery({
   args: { installationId: v.number() },
   returns: v.any(),

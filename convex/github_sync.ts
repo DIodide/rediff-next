@@ -31,6 +31,7 @@ function signJwtRS256(appId: string, privateKeyPem: string): string {
   return `${unsigned}.${sigB64}`;
 }
 
+// An action is something that can have a side effect
 export const syncReposForInstallation = action({
   args: { installationId: v.number() },
   returns: v.object({ synced: v.number() }),

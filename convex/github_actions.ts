@@ -4,6 +4,7 @@ import { action } from "./_generated/server";
 import { v } from "convex/values";
 import crypto from "node:crypto";
 
+// An action is something that can have a side effect
 export const verifyGithubSignature = action({
   args: {
     secret: v.string(),

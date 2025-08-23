@@ -18,6 +18,7 @@ export default async function ServerPage() {
           <pre>{JSON.stringify(data, null, 2)}</pre>
         </code>
       </div>
+      {/* Home is a client component that uses the preloaded data but also subscribes to the query */}
       <Home preloaded={preloaded} />
     </main>
   );

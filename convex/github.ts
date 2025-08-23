@@ -1,6 +1,8 @@
 import { internalMutation } from "./_generated/server";
 import { v } from "convex/values";
 
+// An internal mutation can only be called from other mutations or the
+// server.
 export const recordEvent = internalMutation({
   args: {
     idempotencyKey: v.string(),
